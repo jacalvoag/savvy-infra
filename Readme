@@ -1,0 +1,66 @@
+# savvy-infra
+
+Docker Compose infrastructure for Savvy — PostgreSQL 16 + NestJS backend.
+
+## Requisitos
+
+- Docker >= 24
+- Docker Compose >= 2.20
+- Repositorio `savvy-backend` clonado en el mismo directorio padre
+
+```
+parent/
+├── savvy-backend/
+└── savvy-infra/       ← estás aquí
+```
+
+## Primer arranque
+
+```bash
+cp .env.example .env
+# Editar .env con los valores reales (JWT_SECRET, BREVO_API_KEY, etc.)
+
+docker compose up --build
+```
+
+El servicio `backend` espera a que `postgres` pase su healthcheck antes de arrancar.
+Al iniciar ejecuta automáticamente `npx prisma migrate deploy`.
+
+## Comandos útiles
+
+```bash
+# Levantar en background
+docker compose up -d --build
+
+# Ver logs
+docker compose logs -f backend
+docker compose logs -f postgres
+
+# Detener y eliminar contenedores (conserva el volumen de datos)
+docker compose down
+
+# Eliminar también el volumen de datos
+docker compose down -v
+
+# Conectarse a PostgreSQL
+docker compose exec postgres psql -U savvy_user -d savvy
+```
+
+## Variables de entorno
+
+| Variable | Descripción |
+|---|---|
+| `POSTGRES_DB` | Nombre de la base de datos |
+| `POSTGRES_USER` | Usuario de PostgreSQL |
+| `POSTGRES_PASSWORD` | Contraseña de PostgreSQL |
+| `DATABASE_URL` | URL de conexión para Prisma — usar `postgres` como host (nombre del servicio Docker) |
+| `JWT_SECRET` | Secret para firmar JWT — cambiar en producción |
+| `BREVO_API_KEY` | API key de Brevo para emails transaccionales (opcional) |
+| `EXCHANGERATE_API_KEY` | API key de ExchangeRate API para tasas USD→MXN (opcional) |
+
+## Puertos expuestos
+
+| Servicio | Puerto |
+|---|---|
+| PostgreSQL | `5432` |
+| Backend API | `4000` |
