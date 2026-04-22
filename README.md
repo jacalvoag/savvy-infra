@@ -1,69 +1,36 @@
-# Savvy Infrastructure
+# Savvy Infrastructure - PostgreSQL
 
-Docker Compose infrastructure for compiling and running the Savvy ecosystem, including PostgreSQL and the NestJS backend API.
+Base de datos PostgreSQL para el ecosistema Savvy.
 
-## Requirements
+## Requisitos
 
-- Docker (v24 or higher)
-- Docker Compose (v2.20 or higher)
-- The backend application cloned and configured in the sister directory
+- Docker >= 24.0
+- Docker Compose >= 2.20
 
-Directory Structure:
-```text
-parent/
-├── savvy-back/      (Backend Codebase)
-└── savvy-infra/     (Current Infrastructure Directory)
-```
+## Inicio Rápido
 
-## Getting Started
-
-1. Set up your environment variables:
+1. Configurar variables de entorno:
 ```bash
 cp .env.example .env
 ```
-Ensure you configure variables such as `JWT_SECRET`, `POSTGRES_USER`, and API keys.
 
-2. Build and start the services:
+2. Levantar PostgreSQL:
 ```bash
-docker compose up --build
+docker compose up -d
 ```
-The `backend` service is configured to wait for the `postgres` healthcheck to pass before starting. It will also automatically execute database migrations on initialization.
 
-## Useful Commands
-
+3. Verificar estado:
 ```bash
-# Start services in the background
-docker compose up -d --build
-
-# View real-time logs
-docker compose logs -f backend
+docker compose ps
 docker compose logs -f postgres
-
-# Stop and remove containers (data volumes are preserved)
-docker compose down
-
-# Stop and entirely remove containers and data volumes
-docker compose down -v
-
-# Connect to the PostgreSQL instance via CLI
-docker compose exec postgres psql -U savvy_user -d savvy
 ```
 
-## Environment Variables
+## Conexión
 
-| Variable | Description |
-|---|---|
-| `POSTGRES_DB` | Name of the PostgreSQL database |
-| `POSTGRES_USER` | PostgreSQL Username |
-| `POSTGRES_PASSWORD` | PostgreSQL Password |
-| `DATABASE_URL` | Database connection URL for Prisma (Use `postgres` as the internal host) |
-| `JWT_SECRET` | Secret key for JWT signing |
-| `BREVO_API_KEY` | (Optional) Brevo API key for transactional emails |
-| `EXCHANGERATE_API_KEY` | (Optional) ExchangeRate API key for USD-MXN conversion |
+- **Host:** localhost
+- **Puerto:** 5432
+- **Base de datos:** savvy
+- **Usuario:** savvy_user
+- **Contraseña:** changeme (cambiar en producción)
 
-## Exposed Ports
-
-| Service | Port |
-|---|---|
-| PostgreSQL | `5433` (maps internally to 5432) |
-| Backend API | `4000` |
+**Connection String:**
