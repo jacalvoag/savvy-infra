@@ -6,7 +6,7 @@ services:
     container_name: savvy-postgres
     restart: unless-stopped
     ports:
-      - '5432:5432'
+      - '5433:5432'
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
@@ -24,7 +24,7 @@ services:
 
   backend:
     build:
-      context: ../savvy-backend
+      context: ../savvy-back
       dockerfile: Dockerfile
     container_name: savvy-backend
     restart: unless-stopped
@@ -37,6 +37,7 @@ services:
       EXCHANGERATE_API_KEY: ${EXCHANGERATE_API_KEY}
       NODE_ENV: production
       PORT: 4000
+      CORS_ORIGIN: ${CORS_ORIGIN}
     depends_on:
       postgres:
         condition: service_healthy
