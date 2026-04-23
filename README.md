@@ -1,36 +1,49 @@
-# Savvy Infrastructure - PostgreSQL
+# Savvy Infrastructure
 
-Base de datos PostgreSQL para el ecosistema Savvy.
+Infraestructura de base de datos PostgreSQL para el ecosistema Savvy.
 
-## Requisitos
+## 🎯 Propósito
+
+Este repositorio contiene:
+- Configuración de PostgreSQL via Docker
+- Scripts de setup automatizado
+- Herramientas de backup y restauración
+- Documentación técnica del schema
+
+## 📋 Requisitos
 
 - Docker >= 24.0
 - Docker Compose >= 2.20
+- Bash (para scripts de automatización)
 
-## Inicio Rápido
+## 🚀 Inicio Rápido
 
-1. Configurar variables de entorno:
+### Desarrollo Local
+
 ```bash
-cp .env.example .env
+# 1. Copiar variables de entorno
+cp .env.example .env.local
+
+# 2. Editar credenciales (opcional, los defaults funcionan)
+nano .env.local
+
+# 3. Levantar PostgreSQL
+./setup-database.sh local
 ```
 
-2. Levantar PostgreSQL:
+### Producción (DigitalOcean)
+
 ```bash
-docker compose up -d
+# 1. Crear .env.production con credenciales seguras
+cp .env.example .env.production
+nano .env.production  # Cambiar TODAS las contraseñas
+
+# 2. Setup automatizado
+./setup-database.sh production
 ```
 
-3. Verificar estado:
-```bash
-docker compose ps
-docker compose logs -f postgres
-```
+## 🔌 Conexión
 
-## Conexión
+Después del setup, conecta desde el backend:
 
-- **Host:** localhost
-- **Puerto:** 5432
-- **Base de datos:** savvy
-- **Usuario:** savvy_user
-- **Contraseña:** changeme (cambiar en producción)
-
-**Connection String:**
+**Desarrollo Local:**

@@ -1,26 +1,31 @@
 version: '3.8'
-
 services:
+  # PostgreSQL: Core database para usuarios, movimientos, metas, grupos
   postgres:
     image: postgres:16-alpine
     container_name: savvy-postgres
     restart: unless-stopped
-    ports:
-      - '5432:5432'
     environment:
-      POSTGRES_DB: ${POSTGRES_DB:-savvy}
-      POSTGRES_USER: ${POSTGRES_USER:-savvy_user}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+      POSTGRES_DB: ${DB_NAME:-savvy}
+      POSTGRES_USER: ${DB_ADMIN_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_ADMIN_PASSWORD:-postgres}
+      # Variables para el script de init
+      APP_USER: ${DB_USER:-savvy_app}
+      APP_PASSWORD: ${DB_PASSWORD:-changeme}
+    ports:
+      - "${DB_PORT:-5432}:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./init-postgres.sql:/docker-entrypoint-initdb.d/01-init.sql:ro
+      - ./init-roles.sh:/docker-entrypoint-initdb.d/02-roles.sh:ro
+    networks:
+      - savvy-network
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER:-savvy_user} -d ${POSTGRES_DB:-savvy}']
+      test: ["CMD-SHELL", "pg_isready -U ${DB_ADMIN_USER:-postgres} -d ${DB_NAME:-savvy}"]
       interval: 10s
       timeout: 5s
       retries: 5
-    networks:
-      - savvy-network
+      start_period: 10s
 
 volumes:
   postgres_data:
